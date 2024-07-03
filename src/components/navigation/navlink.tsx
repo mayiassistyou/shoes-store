@@ -7,9 +7,10 @@ import { usePathname } from "next/navigation";
 type NavLinkProps = {
   href: string;
   name: string;
+  onClick?: () => void;
 };
 
-function NavLink({ href, name }: NavLinkProps): JSX.Element {
+function NavLink({ href, name, onClick }: NavLinkProps): JSX.Element {
   const pathname = usePathname();
 
   return (
@@ -19,7 +20,9 @@ function NavLink({ href, name }: NavLinkProps): JSX.Element {
         pathname === href && "text-primary",
       )}
     >
-      <Link href={href}>{name}</Link>
+      <Link href={href} onClick={onClick}>
+        {name}
+      </Link>
     </li>
   );
 }

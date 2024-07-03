@@ -2,14 +2,16 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 type NavLinkProps = {
   href: string;
   name: string;
-  pathname: string;
 };
 
-function NavLink({ href, name, pathname }: NavLinkProps): JSX.Element {
+function NavLink({ href, name }: NavLinkProps): JSX.Element {
+  const pathname = usePathname();
+
   return (
     <li
       className={cn(

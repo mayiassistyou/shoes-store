@@ -1,5 +1,6 @@
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/navigation/navbar";
+import { auth } from "@/server/auth";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Roboto } from "next/font/google";
@@ -16,11 +17,13 @@ export const metadata: Metadata = {
   description: "The best football shoes store in the world",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={roboto.className}>
@@ -29,7 +32,9 @@ export default function RootLayout({
             <Navbar />
 
             <main className="flex min-h-[calc(100vh-4rem)] flex-col">
-              <div className="flex h-full flex-1 flex-col">{children}</div>
+              <div className="mb-20 mt-8 flex h-full flex-1 flex-col">
+                {children}
+              </div>
               <Footer />
             </main>
           </div>

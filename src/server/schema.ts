@@ -1,10 +1,13 @@
 import { createId } from "@paralleldrive/cuid2";
+import { relations } from "drizzle-orm";
 import {
   boolean,
   integer,
   pgEnum,
   pgTable,
   primaryKey,
+  real,
+  serial,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
@@ -107,3 +110,56 @@ export const emailTokens = pgTable(
     compoundKey: primaryKey({ columns: [vt.id, vt.token] }),
   }),
 );
+
+export const brands = pgTable("brands", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  image: text("image").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const products = pgTable("products", {
+  id: serial("id").primaryKey(),
+  brandID: serial("brand_id")
+    .notNull()
+    .references(() => brands.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  image: text("image").notNull(),
+  price: real("price").notNull(),
+  slug: text("slug").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const sizes = pgTable("sizes", {
+  id: serial("id").primaryKey(),
+  productID: serial("product_id")
+    .notNull()
+    .references(() => products.id),
+  size: text("size").notNull(),
+  quantity: integer("quantity").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const brandsRelations = relations(brands, ({ many }) => ({
+  products: many(products),
+}));
+
+export const productsRelations = relations(products, ({ one, many }) => ({
+  brands: one(brands, {
+    fields: [products.brandID],
+    references: [brands.id],
+  }),
+  sizes: many(sizes),
+}));
+
+export const sizesRelations = relations(sizes, ({ one }) => ({
+  products: one(products, {
+    fields: [sizes.productID],
+    references: [products.id],
+  }),
+}));

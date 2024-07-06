@@ -41,7 +41,7 @@ export const generateEmailVerificationToken = async (email: string) => {
 export const newVerification = async (token: string) => {
   const existingToken = await getVerificationTokenByEmail(token);
   if (!existingToken)
-    return { error: "Token không hợp lệ. Vui lòng kiểm tra lại email!" };
+    return { error: "Token không hợp lệ. Vui lòng kiểm tra lại!" };
   const hasExpired = new Date(existingToken.expires) < new Date();
 
   if (hasExpired) return { error: "Token đã hết hạn" };

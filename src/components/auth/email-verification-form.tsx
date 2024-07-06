@@ -18,9 +18,7 @@ function EmailVerificationForm(): JSX.Element {
   const handleVerification = useCallback(() => {
     if (success || error) return;
     if (!token) {
-      setError(
-        "Không tìm thấy token xác thực. Vui lòng kiểm tra lại email của bạn.",
-      );
+      setError("Token xác thực không hợp lệ. Vui lòng kiểm tra lại.");
       return;
     }
     newVerification(token).then((data) => {

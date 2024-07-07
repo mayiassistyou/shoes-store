@@ -1,10 +1,11 @@
 import DataTable from "@/components/ui/data-table";
-import { db } from "@/server";
+import { getBrands } from "@/server/actions/get-brands";
 
 import { columns } from "./columns";
 
 async function Brands(): Promise<JSX.Element> {
-  const brands = await db.query.brands.findMany();
+  const response = await getBrands();
+  const brands = response.brands || [];
 
   return (
     <div>

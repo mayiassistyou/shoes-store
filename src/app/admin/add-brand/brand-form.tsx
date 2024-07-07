@@ -2,6 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Form,
   FormControl,
   FormField,
@@ -58,79 +65,91 @@ function BrandForm(): JSX.Element {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tên thương hiệu</FormLabel>
-              <FormControl>
-                <Input placeholder="Nike" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Hình ảnh</FormLabel>
-              <FormControl>
-                <UploadDropzone
-                  className="cursor-pointer border-secondary transition-all duration-500 ease-in-out hover:bg-primary/10 ut-button:bg-primary/75 ut-allowed-content:text-secondary-foreground ut-label:text-primary ut-upload-icon:text-primary/50 ut-button:ut-readying:bg-secondary"
-                  endpoint="brandImageUploader"
-                  onDrop={(acceptedFiles) => {
-                    setImage(URL.createObjectURL(acceptedFiles[0]));
-                  }}
-                  onClientUploadComplete={(res) => {
-                    form.setValue("image", res[0].url!);
-                    return;
-                  }}
-                  onUploadError={(error: Error) => {
-                    form.setError("image", {
-                      type: "validate",
-                      message: error.message,
-                    });
-                    return;
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-              {image && (
-                <Image
-                  className="rounded-md bg-white shadow-md"
-                  src={image}
-                  alt="Brand Image"
-                  width={100}
-                  height={100}
-                />
+    <Card>
+      <CardHeader>
+        <CardTitle>Thêm thương hiệu</CardTitle>
+        <CardDescription>
+          Thêm thương hiệu mới vào cửa hàng của bạn
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tên thương hiệu</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nike" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mô tả</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Thương hiệu số 1 thế giới" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Hình ảnh</FormLabel>
+                  <FormControl>
+                    <UploadDropzone
+                      className="cursor-pointer border-secondary transition-all duration-500 ease-in-out hover:bg-primary/10 ut-button:bg-primary/75 ut-allowed-content:text-secondary-foreground ut-label:text-primary ut-upload-icon:text-primary/50 ut-button:ut-readying:bg-secondary"
+                      endpoint="brandImageUploader"
+                      config={{ mode: "auto" }}
+                      onClientUploadComplete={(res) => {
+                        form.setValue("image", res[0].url!);
+                        setImage(res[0].url!);
+                        return;
+                      }}
+                      onUploadError={(error: Error) => {
+                        form.setError("image", {
+                          type: "validate",
+                          message: error.message,
+                        });
+                        return;
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                  {image && (
+                    <Image
+                      className="rounded-md bg-white shadow-md"
+                      src={image}
+                      alt="Brand Image"
+                      width={100}
+                      height={100}
+                    />
+                  )}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mô tả</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Thương hiệu số 1 thế giới"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <Button className="w-full" type="submit">
-          Thêm thương hiệu
-        </Button>
-      </form>
-    </Form>
+            <Button className="w-full" type="submit">
+              Thêm thương hiệu
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
 

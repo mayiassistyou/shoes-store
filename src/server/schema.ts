@@ -122,21 +122,32 @@ export const brands = pgTable("brands", {
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
-  brandID: serial("brand_id")
+  brandId: serial("brand_id")
     .notNull()
     .references(() => brands.id),
-  title: text("title").notNull(),
+  name: text("name").notNull(),
   description: text("description"),
-  image: text("image").notNull(),
   price: real("price").notNull(),
   slug: text("slug").notNull().unique(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const productImages = pgTable("product_images", {
+  id: serial("id").primaryKey(),
+  productId: serial("product_id")
+    .notNull()
+    .references(() => products.id),
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  order: real("order").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const sizes = pgTable("sizes", {
   id: serial("id").primaryKey(),
-  productID: serial("product_id")
+  productId: serial("product_id")
     .notNull()
     .references(() => products.id),
   size: text("size").notNull(),
@@ -150,16 +161,24 @@ export const brandsRelations = relations(brands, ({ many }) => ({
 }));
 
 export const productsRelations = relations(products, ({ one, many }) => ({
-  brands: one(brands, {
-    fields: [products.brandID],
+  brand: one(brands, {
+    fields: [products.brandId],
     references: [brands.id],
   }),
   sizes: many(sizes),
+  images: many(productImages),
+}));
+
+export const productImagesRelations = relations(productImages, ({ one }) => ({
+  products: one(products, {
+    fields: [productImages.productId],
+    references: [products.id],
+  }),
 }));
 
 export const sizesRelations = relations(sizes, ({ one }) => ({
   products: one(products, {
-    fields: [sizes.productID],
+    fields: [sizes.productId],
     references: [products.id],
   }),
 }));

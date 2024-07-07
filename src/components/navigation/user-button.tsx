@@ -22,7 +22,7 @@ function UserButton({ user }: Session): JSX.Element {
       <DropdownMenuTrigger>
         <Avatar className="h-7 w-7">
           {user.image && (
-            <Image src={user.image} alt={user.name!} fill={true} />
+            <Image src={user.image} alt={user.name!} fill={true} sizes="100%" />
           )}
           {!user.image && (
             <AvatarFallback className="bg-primary/25">

@@ -16,7 +16,9 @@ import { createBrand } from "@/server/actions/create-brand";
 import { BrandSchema } from "@/types/brand-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAction } from "next-safe-action/hooks";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -32,9 +34,10 @@ function BrandForm(): JSX.Element {
     },
   });
 
+  const [image, setImage] = useState<string>("");
+
   const { execute, status } = useAction(createBrand, {
     onSuccess: ({ data }) => {
-      console.log({ data });
       if (data?.error) {
         toast.error(data.error);
       }
@@ -80,6 +83,9 @@ function BrandForm(): JSX.Element {
                 <UploadDropzone
                   className="cursor-pointer border-secondary transition-all duration-500 ease-in-out hover:bg-primary/10 ut-button:bg-primary/75 ut-allowed-content:text-secondary-foreground ut-label:text-primary ut-upload-icon:text-primary/50 ut-button:ut-readying:bg-secondary"
                   endpoint="imageUploader"
+                  onDrop={(acceptedFiles) => {
+                    setImage(URL.createObjectURL(acceptedFiles[0]));
+                  }}
                   onClientUploadComplete={(res) => {
                     form.setValue("image", res[0].url!);
                     return;
@@ -91,17 +97,18 @@ function BrandForm(): JSX.Element {
                     });
                     return;
                   }}
-                  onUploadBegin={(name) => {
-                    // Do something once upload begins
-                    console.log("Uploading: ", name);
-                  }}
-                  onDrop={(acceptedFiles) => {
-                    // Do something with the accepted files
-                    console.log("Accepted files: ", acceptedFiles);
-                  }}
                 />
               </FormControl>
               <FormMessage />
+              {image && (
+                <Image
+                  className="rounded-md bg-white shadow-md"
+                  src={image}
+                  alt="Brand Image"
+                  width={100}
+                  height={100}
+                />
+              )}
             </FormItem>
           )}
         />

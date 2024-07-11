@@ -26,11 +26,12 @@ async function Navbar() {
         </ul>
 
         <div className="flex flex-1 items-center justify-end gap-2 lg:gap-4">
-          <ul className="hidden lg:block">
-            <NavLink href="/admin" name="Quản lý" />
-          </ul>
+          {session && session?.user.role === "admin" && (
+            <ul className="hidden lg:block">
+              <NavLink href="/admin" name="Quản lý" />
+            </ul>
+          )}
           <ThemeToggle />
-
           {session ? (
             <UserButton expires={session?.expires} user={session?.user} />
           ) : (

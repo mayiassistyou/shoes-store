@@ -1,5 +1,6 @@
 import Footer from "@/components/footer";
 import Navbar from "@/components/navigation/navbar";
+import ReactQueryProvider from "@/components/providers/react-query-provider";
 import Toaster from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
@@ -26,17 +27,19 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={roboto.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="mx-auto max-w-8xl flex-grow px-6 md:px-12">
-            <Navbar />
-            <Toaster />
+          <ReactQueryProvider>
+            <div className="mx-auto max-w-8xl flex-grow px-6 md:px-12">
+              <Navbar />
+              <Toaster />
 
-            <main className="flex min-h-[calc(100vh-4rem)] flex-col">
-              <div className="mb-20 mt-8 flex h-full flex-1 flex-col">
-                {children}
-              </div>
-              <Footer />
-            </main>
-          </div>
+              <main className="flex min-h-[calc(100vh-4rem)] flex-col">
+                <div className="mb-20 mt-8 flex h-full flex-1 flex-col">
+                  {children}
+                </div>
+                <Footer />
+              </main>
+            </div>
+          </ReactQueryProvider>
         </ThemeProvider>
       </body>
     </html>

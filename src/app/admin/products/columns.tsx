@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { InferResultType } from "@/lib/infer-type";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
@@ -15,15 +16,17 @@ import { useState } from "react";
 import DeleteDialog from "./delete-dialog";
 import EditDialog from "./edit-dialog";
 
-export type BrandColumn = {
+export type ProductColumn = {
   id: number;
-  title: string;
+  name: string;
   description: string | null;
-  image: string;
+  price: number;
+  images: InferResultType<"productImages">[];
+  brand: InferResultType<"brands">;
 };
 
-const ActionCell = ({ row }: { row: Row<BrandColumn> }) => {
-  const brand = row.original;
+const ActionCell = ({ row }: { row: Row<ProductColumn> }) => {
+  const product = row.original;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -32,12 +35,12 @@ const ActionCell = ({ row }: { row: Row<BrandColumn> }) => {
       <DeleteDialog
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
-        brand={brand}
+        product={product}
       />
       <EditDialog
         open={editDialogOpen}
         setOpen={setEditDialogOpen}
-        brand={brand}
+        product={product}
       />
 
       <DropdownMenu>
@@ -66,29 +69,68 @@ const ActionCell = ({ row }: { row: Row<BrandColumn> }) => {
   );
 };
 
-export const columns: ColumnDef<BrandColumn>[] = [
+export const columns: ColumnDef<ProductColumn>[] = [
   {
-    accessorKey: "title",
-    header: "Tên thương hiệu",
+    accessorKey: "name",
+    header: "Tên sản phẩm",
   },
   {
-    accessorKey: "image",
-    header: "Hình ảnh",
+    accessorKey: "brand",
+    header: "Thương hiệu",
+    cell: ({ row }) => {
+      return <div className="min-w-28">{row.original.brand.title}</div>;
+    },
+  },
+  {
+    accessorKey: "price",
+    header: "Giá",
     cell: ({ row }) => {
       return (
-        <Image
-          className="h-full w-auto p-2 dark:rounded-md dark:bg-white"
-          src={row.getValue("image")}
-          alt={row.getValue("title")}
-          width={50}
-          height={50}
-        />
+        <div className="text-nowrap">
+          {row.original.price.toLocaleString()} đ
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "images",
+    header: "Hình ảnh",
+    cell: ({ row }) => {
+      const productImages = row.original.images;
+
+      return (
+        <div className="grid grid-cols-4 gap-2">
+          {productImages.map((image) => (
+            <Image
+              key={image.id}
+              className="h-full w-auto p-2 dark:rounded-md dark:bg-white"
+              src={image.url}
+              alt={image.name}
+              width={50}
+              height={50}
+            />
+          ))}
+        </div>
       );
     },
   },
   {
     accessorKey: "description",
     header: "Mô tả",
+    cell: ({ row }) => {
+      const description = row.original.description;
+
+      return (
+        <div className="max-w-lg">
+          {description && (
+            <div
+              className="line-clamp-3"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+          )}
+        </div>
+      );
+    },
   },
   {
     id: "actions",

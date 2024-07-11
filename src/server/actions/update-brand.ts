@@ -24,7 +24,7 @@ export const updateBrand = action
 
       const editedProduct = await db
         .update(brands)
-        .set({ title, image, description })
+        .set({ title, image, description, updatedAt: new Date() })
         .where(eq(brands.id, id))
         .returning();
 

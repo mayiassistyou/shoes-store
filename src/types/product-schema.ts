@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const ProductSchema = z.object({
-  id: z.string().optional(),
+  id: z.number().optional(),
   name: z.string().min(1, {
     message: "Tên sản phẩm không được để trống",
   }),

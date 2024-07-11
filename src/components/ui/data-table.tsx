@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/table";
 import {
   ColumnDef,
+  OnChangeFn,
+  PaginationState,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -27,6 +29,10 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   title: string;
   description: string;
+  hasPagination?: boolean;
+  total?: number;
+  pagination?: PaginationState;
+  onPaginationChange?: OnChangeFn<PaginationState> | undefined;
 }
 
 function DataTable<TData, TValue>({
@@ -34,11 +40,21 @@ function DataTable<TData, TValue>({
   data,
   title,
   description,
+  hasPagination = false,
+  total,
+  pagination,
+  onPaginationChange,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
-    data,
     columns,
+    data,
     getCoreRowModel: getCoreRowModel(),
+    rowCount: total,
+    state: {
+      pagination,
+    },
+    manualPagination: hasPagination,
+    onPaginationChange,
   });
 
   return (
@@ -69,14 +85,14 @@ function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table?.getRowModel()?.rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="align-top">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),

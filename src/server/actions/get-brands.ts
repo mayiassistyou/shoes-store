@@ -8,6 +8,6 @@ export async function getBrands() {
 
     return { brands };
   } catch (error) {
-    return { error: "Failed to get brands" };
+    return { error: "Đã có lỗi xảy ra." };
   }
 }

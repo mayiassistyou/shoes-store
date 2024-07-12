@@ -24,6 +24,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./pagination";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -56,6 +66,10 @@ function DataTable<TData, TValue>({
     manualPagination: hasPagination,
     onPaginationChange,
   });
+
+  const lastPage =
+    (total && pagination && Math.ceil(total / pagination.pageSize)) || 0;
+  const pageIndex = pagination?.pageIndex || 0;
 
   return (
     <Card>
@@ -113,6 +127,92 @@ function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+
+        {hasPagination && (
+          <Pagination className="mt-8">
+            <PaginationContent>
+              <PaginationItem>
+                {table.getCanPreviousPage() && (
+                  <PaginationPrevious onClick={() => table.previousPage()} />
+                )}
+              </PaginationItem>
+              {pageIndex > 2 && (
+                <PaginationItem>
+                  <PaginationLink onClick={() => table.setPageIndex(0)}>
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+
+              {pageIndex > 2 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+              {pageIndex > 1 && (
+                <PaginationItem>
+                  <PaginationLink
+                    onClick={() => table.setPageIndex(pageIndex - 2)}
+                  >
+                    {Number(pageIndex - 1)}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              {pageIndex > 0 && (
+                <PaginationItem>
+                  <PaginationLink
+                    onClick={() => table.setPageIndex(pageIndex - 1)}
+                  >
+                    {Number(pageIndex)}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              <PaginationItem>
+                <PaginationLink isActive>
+                  {Number(pageIndex) + 1}
+                </PaginationLink>
+              </PaginationItem>
+              {pageIndex < lastPage - 2 && (
+                <PaginationItem>
+                  <PaginationLink
+                    onClick={() => table.setPageIndex(pageIndex + 1)}
+                  >
+                    {Number(pageIndex) + 2}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              {pageIndex < lastPage - 3 && (
+                <PaginationItem>
+                  <PaginationLink
+                    onClick={() => table.setPageIndex(pageIndex + 2)}
+                  >
+                    {Number(pageIndex) + 3}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              {pageIndex < lastPage - 4 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+              {pageIndex < lastPage - 1 && (
+                <PaginationItem>
+                  <PaginationLink
+                    onClick={() => table.setPageIndex(lastPage - 1)}
+                  >
+                    {lastPage}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+
+              {table.getCanNextPage() && (
+                <PaginationItem>
+                  <PaginationNext onClick={() => table.nextPage()} />
+                </PaginationItem>
+              )}
+            </PaginationContent>
+          </Pagination>
+        )}
       </CardContent>
     </Card>
   );

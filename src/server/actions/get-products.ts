@@ -18,6 +18,7 @@ export default async function getProducts(
       },
       offset: (page - 1) * limit,
       limit: limit,
+      orderBy: (products, { desc }) => [desc(products.createdAt)],
     });
 
     const total = await db.select({ count: count() }).from(productTable);

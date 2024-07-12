@@ -10,7 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PAGE_SIZE } from "@/lib/constants";
 import { deleteProduct } from "@/server/actions/delete-product";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAction } from "next-safe-action/hooks";
 import { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
@@ -21,11 +23,15 @@ function DeleteDialog({
   open,
   setOpen,
   product,
+  pageIndex,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   product: ProductColumn;
+  pageIndex: number;
 }): JSX.Element {
+  const queryClient = useQueryClient();
+
   const { execute } = useAction(deleteProduct, {
     onSuccess: ({ data }) => {
       if (data?.error) {
@@ -34,7 +40,16 @@ function DeleteDialog({
       if (data?.success) {
         toast.dismiss();
         toast.success(data.success);
+
+        queryClient.refetchQueries({
+          queryKey: [
+            "get-products",
+            { pageIndex: pageIndex, pageSize: PAGE_SIZE },
+          ],
+        });
       }
+
+      setOpen(false);
     },
     onExecute: (data) => {
       toast.loading("Đang xoá sản phẩm...");

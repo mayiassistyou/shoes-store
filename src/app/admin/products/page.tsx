@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from "@/lib/constants";
 import getProducts from "@/server/actions/get-products";
 import {
   HydrationBoundary,
@@ -11,8 +12,14 @@ async function AdminProducts(): Promise<JSX.Element> {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["get-products"],
-    queryFn: () => getProducts(),
+    queryKey: [
+      "get-products",
+      {
+        pageIndex: 0,
+        pageSize: PAGE_SIZE,
+      },
+    ],
+    queryFn: () => getProducts(1, PAGE_SIZE),
   });
 
   return (

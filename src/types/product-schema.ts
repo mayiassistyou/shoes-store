@@ -11,9 +11,7 @@ export const ProductSchema = z.object({
   brandId: z.coerce
     .number({ invalid_type_error: "Thương hiệu không được để trống" })
     .positive({ message: "Thương hiệu không được để trống" }),
-  description: z.string().min(1, {
-    message: "Mô tả sản phẩm không được để trống",
-  }),
+  description: z.string().optional(),
   images: z
     .array(
       z.object({

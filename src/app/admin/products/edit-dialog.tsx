@@ -26,19 +26,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { STALE_TIME } from "@/lib/constants";
+import { PAGE_SIZE, STALE_TIME } from "@/lib/constants";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { getBrands } from "@/server/actions/get-brands";
 import { updateProduct } from "@/server/actions/update-product";
 import { ProductSchema } from "@/types/product-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, X } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import Image from "next/image";
 import Link from "next/link";
-import { Dispatch, SetStateAction, use, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -50,22 +50,39 @@ function EditDialog({
   open,
   setOpen,
   product,
+  pageIndex,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   product: ProductColumn;
+  pageIndex: number;
 }): JSX.Element {
+  const queryClient = useQueryClient();
+
+  const defaultProduct = {
+    id: product.id,
+    name: product.name,
+    images: product.images,
+    price: product.price,
+    brandId: product.brand.id,
+    description: product.description || "",
+  };
+
   const form = useForm<z.infer<typeof ProductSchema>>({
     resolver: zodResolver(ProductSchema),
-    defaultValues: {
-      id: product.id,
-      name: product.name,
-      images: product.images,
-      price: product.price,
-      brandId: product.brand.id,
-      description: product.description || "",
-    },
+    defaultValues: useMemo(() => {
+      return defaultProduct;
+    }, [product.id]),
   });
+
+  const [images, setImages] = useState<string[]>(
+    product.images.map((img) => img.url),
+  );
+
+  useEffect(() => {
+    form.reset(defaultProduct);
+    setImages(product.images.map((img) => img.url));
+  }, [product.id]);
 
   const { data } = useQuery({
     queryKey: ["get-brands"],
@@ -74,9 +91,6 @@ function EditDialog({
   });
   const brands = data?.brands || [];
 
-  const [images, setImages] = useState<string[]>(
-    product.images.map((img) => img.url),
-  );
   const { append, update, remove } = useFieldArray({
     control: form.control,
     name: "images" as never,
@@ -90,6 +104,13 @@ function EditDialog({
       if (data?.success) {
         toast.dismiss();
         toast.success(data.success);
+
+        queryClient.refetchQueries({
+          queryKey: [
+            "get-products",
+            { pageIndex: pageIndex, pageSize: PAGE_SIZE },
+          ],
+        });
       }
       setOpen(false);
     },
@@ -202,7 +223,7 @@ function EditDialog({
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Tiptap val={field.value} />
+                      <Tiptap val={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -265,7 +286,7 @@ function EditDialog({
                     <div className="flex items-end gap-2">
                       {images.length > 0 &&
                         images.map((image) => (
-                          <div className="relative mt-2">
+                          <div className="relative mt-2" key={image}>
                             <Image
                               key={image}
                               className="h-24 w-auto rounded-md bg-white shadow-md"

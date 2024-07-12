@@ -41,7 +41,7 @@ export const updateProduct = action
           .where(eq(products.id, id))
           .returning();
 
-        revalidatePath("/admin/product");
+        revalidatePath("/admin/products");
 
         return {
           success: `Cập nhật sản phẩm ${editedProduct[0].name} thành công!`,

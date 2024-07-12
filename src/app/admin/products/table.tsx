@@ -16,7 +16,13 @@ function ProductTable(): JSX.Element {
   });
 
   const { data } = useQuery({
-    queryKey: ["get-products", pagination],
+    queryKey: [
+      "get-products",
+      {
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+      },
+    ],
     queryFn: () => getProducts(pagination.pageIndex + 1, pagination.pageSize),
     placeholderData: keepPreviousData,
     staleTime: STALE_TIME,

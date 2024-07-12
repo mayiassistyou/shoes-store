@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InferResultType } from "@/lib/infer-type";
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef, Row, Table } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -25,8 +25,15 @@ export type ProductColumn = {
   brand: InferResultType<"brands">;
 };
 
-const ActionCell = ({ row }: { row: Row<ProductColumn> }) => {
+const ActionCell = ({
+  row,
+  table,
+}: {
+  row: Row<ProductColumn>;
+  table: Table<ProductColumn>;
+}) => {
   const product = row.original;
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -36,11 +43,13 @@ const ActionCell = ({ row }: { row: Row<ProductColumn> }) => {
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         product={product}
+        pageIndex={table.getState().pagination.pageIndex}
       />
       <EditDialog
         open={editDialogOpen}
         setOpen={setEditDialogOpen}
         product={product}
+        pageIndex={table.getState().pagination.pageIndex}
       />
 
       <DropdownMenu>
@@ -134,6 +143,6 @@ export const columns: ColumnDef<ProductColumn>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ActionCell row={row} />,
+    cell: ({ row, table }) => <ActionCell row={row} table={table} />,
   },
 ];

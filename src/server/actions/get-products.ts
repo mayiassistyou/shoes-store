@@ -15,6 +15,7 @@ export default async function getProducts(
       with: {
         images: true,
         brand: true,
+        sizes: true,
       },
       offset: (page - 1) * limit,
       limit: limit,

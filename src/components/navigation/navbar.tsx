@@ -12,18 +12,18 @@ async function Navbar() {
   const session = await auth();
 
   return (
-    <nav className="z-100 sticky inset-x-0 top-0 h-16 w-full backdrop-blur-lg transition-all">
+    <nav className="h-16 w-full backdrop-blur-lg">
       <div className="flex h-16 items-center gap-4">
-        <HamburgerMenu />
+        {/* <HamburgerMenu /> */}
 
         <Link href="/" aria-label="sprout and scribble logo">
           <Logo />
         </Link>
 
-        <ul className="hidden gap-4 lg:flex">
+        {/* <ul className="hidden gap-4 lg:flex">
           <NavLink href="/products" name="Sản phẩm" />
           <NavLink href="/about" name="Về chúng tôi" />
-        </ul>
+        </ul> */}
 
         <div className="flex flex-1 items-center justify-end gap-2 lg:gap-4">
           {session && session?.user.role === "admin" && (

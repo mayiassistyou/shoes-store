@@ -177,7 +177,7 @@ function ProductForm({
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Tiptap val={field.value} />
+                    <Tiptap val={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

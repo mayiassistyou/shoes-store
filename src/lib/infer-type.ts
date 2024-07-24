@@ -25,3 +25,8 @@ export type InferResultType<
     with: With;
   }
 >;
+
+export type ProductType = InferResultType<
+  "products",
+  { brand: true; images: true; sizes: true }
+>;

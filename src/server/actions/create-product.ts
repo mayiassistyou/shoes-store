@@ -14,7 +14,13 @@ export const createProduct = action
   .action(
     async ({ parsedInput: { name, description, price, images, brandId } }) => {
       try {
-        const slug = name.toLowerCase().replace(/ /g, "-");
+        const slug = name
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/[^a-zA-Z0-9-]/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
 
         const newProduct = await db
           .insert(products)

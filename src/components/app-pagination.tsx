@@ -17,7 +17,7 @@ type Props = {
   total: number;
 };
 
-function ProductPagination({ page, pageSize, total }: Props) {
+function AppPagination({ page, pageSize, total }: Props) {
   const lastPage = Math.ceil(total / pageSize) || 0;
   const { replace } = useRouter();
   const searchParams = useSearchParams();
@@ -67,26 +67,26 @@ function ProductPagination({ page, pageSize, total }: Props) {
         <PaginationItem>
           <PaginationLink isActive>{page}</PaginationLink>
         </PaginationItem>
-        {page < lastPage - 3 && (
+        {page < lastPage && (
           <PaginationItem>
             <PaginationLink onClick={() => goToPage(page + 1)}>
               {Number(page) + 1}
             </PaginationLink>
           </PaginationItem>
         )}
-        {page < lastPage - 4 && (
+        {page < lastPage - 1 && (
           <PaginationItem>
             <PaginationLink onClick={() => goToPage(page + 2)}>
               {Number(page) + 2}
             </PaginationLink>
           </PaginationItem>
         )}
-        {page < lastPage - 4 && (
+        {page < lastPage - 2 && (
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
         )}
-        {page < lastPage - 1 && (
+        {page < lastPage - 2 && (
           <PaginationItem>
             <PaginationLink onClick={() => goToPage(lastPage)}>
               {lastPage}
@@ -104,4 +104,4 @@ function ProductPagination({ page, pageSize, total }: Props) {
   );
 }
 
-export default ProductPagination;
+export default AppPagination;

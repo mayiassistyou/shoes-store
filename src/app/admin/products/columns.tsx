@@ -8,10 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InferResultType } from "@/lib/infer-type";
+import { getBrands } from "@/server/actions/get-brands";
 import { ColumnDef, Row, Table } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import DeleteDialog from "./delete-dialog";
 import EditDialog from "./edit-dialog";
@@ -37,19 +38,31 @@ const ActionCell = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
+  const [brands, setBrands] = useState<InferResultType<"brands">[]>([]);
+
+  useEffect(() => {
+    async function fetchBrands() {
+      const res = await getBrands();
+      if (res) {
+        setBrands(res?.brands || []);
+      }
+    }
+
+    fetchBrands();
+  }, []);
+
   return (
     <>
       <DeleteDialog
         open={deleteDialogOpen}
         setOpen={setDeleteDialogOpen}
         product={product}
-        pageIndex={table.getState().pagination.pageIndex}
       />
       <EditDialog
         open={editDialogOpen}
         setOpen={setEditDialogOpen}
         product={product}
-        pageIndex={table.getState().pagination.pageIndex}
+        brands={brands}
       />
 
       <DropdownMenu>

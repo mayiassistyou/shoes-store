@@ -1,31 +1,35 @@
+import AppPagination from "@/components/app-pagination";
+import DataTable from "@/components/ui/data-table";
 import { PAGE_SIZE } from "@/lib/constants";
 import getProducts from "@/server/actions/get-products";
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
 
-import ProductTable from "./table";
+import { columns } from "./columns";
 
-async function AdminProducts(): Promise<JSX.Element> {
-  const queryClient = new QueryClient();
+export const revalidate = 60 * 60;
 
-  await queryClient.prefetchQuery({
-    queryKey: [
-      "get-products",
-      {
-        pageIndex: 0,
-        pageSize: PAGE_SIZE,
-      },
-    ],
-    queryFn: () => getProducts(1, PAGE_SIZE),
-  });
+type Props = {
+  searchParams: {
+    page?: string;
+  };
+};
+
+async function AdminProducts({ searchParams }: Props): Promise<JSX.Element> {
+  const page = Number(searchParams?.page) || 1;
+  const { products, total } = await getProducts(page, PAGE_SIZE);
+
+  if (!products || products.length === 0) return <h2>Không có sản phẩm</h2>;
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ProductTable />
-    </HydrationBoundary>
+    <section>
+      <DataTable
+        columns={columns}
+        data={products}
+        title="Danh sách sản phẩm"
+        description="Chỉnh sửa, xoá và cập nhật sản phẩm 💯"
+      />
+
+      <AppPagination page={page} pageSize={PAGE_SIZE} total={total} />
+    </section>
   );
 }
 

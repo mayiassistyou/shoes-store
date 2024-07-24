@@ -26,14 +26,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PAGE_SIZE, STALE_TIME } from "@/lib/constants";
+import { InferResultType } from "@/lib/infer-type";
 import { UploadDropzone } from "@/lib/uploadthing";
-import { getBrands } from "@/server/actions/get-brands";
 import { updateProduct } from "@/server/actions/update-product";
 import { ProductSchema } from "@/types/product-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, X } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import Image from "next/image";
@@ -50,15 +48,13 @@ function EditDialog({
   open,
   setOpen,
   product,
-  pageIndex,
+  brands,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   product: ProductColumn;
-  pageIndex: number;
-}): JSX.Element {
-  const queryClient = useQueryClient();
-
+  brands: InferResultType<"brands">[];
+}) {
   const defaultProduct = {
     id: product.id,
     name: product.name,
@@ -84,13 +80,6 @@ function EditDialog({
     setImages(product.images.map((img) => img.url));
   }, [product.id]);
 
-  const { data } = useQuery({
-    queryKey: ["get-brands"],
-    queryFn: () => getBrands(),
-    staleTime: STALE_TIME,
-  });
-  const brands = data?.brands || [];
-
   const { append, update, remove } = useFieldArray({
     control: form.control,
     name: "images" as never,
@@ -104,13 +93,6 @@ function EditDialog({
       if (data?.success) {
         toast.dismiss();
         toast.success(data.success);
-
-        queryClient.refetchQueries({
-          queryKey: [
-            "get-products",
-            { pageIndex: pageIndex, pageSize: PAGE_SIZE },
-          ],
-        });
       }
       setOpen(false);
     },
@@ -197,7 +179,7 @@ function EditDialog({
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="0">Chọn thương hiệu</SelectItem>
-                          {brands.map((brand) => (
+                          {brands.map((brand: any) => (
                             <SelectItem
                               key={brand.id}
                               value={brand.id.toString()}

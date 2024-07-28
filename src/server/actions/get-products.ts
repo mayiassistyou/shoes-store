@@ -1,21 +1,12 @@
 "use server";
 
 import { PAGE_SIZE } from "@/lib/constants";
-import {
-  and,
-  count,
-  eq,
-  exists,
-  gte,
-  ilike,
-  lte,
-  notExists,
-} from "drizzle-orm";
+import { and, count, eq, exists, gte, ilike, lte } from "drizzle-orm";
 
 import { db } from "..";
 import { products as productTable, sizes } from "../schema";
 
-export default async function getProducts(
+async function getProducts(
   page: number = 1,
   limit: number = PAGE_SIZE,
   search: string = "",
@@ -83,3 +74,5 @@ export default async function getProducts(
     return { error: "Đã có lỗi xảy ra." };
   }
 }
+
+export default getProducts;

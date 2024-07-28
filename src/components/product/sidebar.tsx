@@ -1,5 +1,7 @@
 "use client";
 
+import { InferResultType } from "@/lib/infer-type";
+import { Infer } from "next/dist/compiled/superstruct";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -22,7 +24,7 @@ const priceFilters = [
   { value: "5", from: "5000000", to: null },
 ];
 
-function Sidebar({ brands }: { brands: any[] }) {
+function Sidebar({ brands }: { brands: InferResultType<"brands">[] }) {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -146,8 +148,11 @@ function Sidebar({ brands }: { brands: any[] }) {
               </div>
               {brands.map((brand) => (
                 <div key={brand.id} className="flex items-center space-x-2">
-                  <RadioGroupItem value={brand.id.toString()} id={brand.id} />
-                  <Label htmlFor={brand.id}>{brand.title}</Label>
+                  <RadioGroupItem
+                    value={brand.id.toString()}
+                    id={brand.id.toString()}
+                  />
+                  <Label htmlFor={brand.id.toString()}>{brand.title}</Label>
                 </div>
               ))}
             </RadioGroup>

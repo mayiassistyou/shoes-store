@@ -151,7 +151,7 @@ export const sizes = pgTable("sizes", {
     .notNull()
     .references(() => products.id),
   size: text("size").notNull(),
-  quantity: integer("quantity").default(0),
+  available: boolean("available").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

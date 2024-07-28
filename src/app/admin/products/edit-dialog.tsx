@@ -179,7 +179,7 @@ function EditDialog({
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="0">Chọn thương hiệu</SelectItem>
-                          {brands.map((brand: any) => (
+                          {brands.map((brand: InferResultType<"brands">) => (
                             <SelectItem
                               key={brand.id}
                               value={brand.id.toString()}

@@ -14,10 +14,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 type Props = {
   page: number;
   pageSize: number;
-  total: number;
+  total: number | undefined;
 };
 
 function AppPagination({ page, pageSize, total }: Props) {
+  if (!total || total === 0) return null;
+
   const lastPage = Math.ceil(total / pageSize) || 0;
   const { replace } = useRouter();
   const searchParams = useSearchParams();

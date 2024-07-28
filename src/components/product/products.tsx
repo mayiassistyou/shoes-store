@@ -5,9 +5,11 @@ import Link from "next/link";
 
 import { Badge } from "../ui/badge";
 
-function Products({ products }: { products: ProductType[] }) {
+function Products({ products }: { products: ProductType[] | undefined }) {
+  if (!products || products.length === 0) return <h2>Không có sản phẩm</h2>;
+
   return (
-    <main className="grid gap-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <main className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-8">
       {products.map((product) => (
         <Link
           key={product.id}

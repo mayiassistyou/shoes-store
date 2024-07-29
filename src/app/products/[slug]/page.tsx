@@ -42,7 +42,10 @@ async function Product({ params }: Props): Promise<JSX.Element> {
           {formatPrice(product.price)}
         </p>
         {product.description && (
-          <div dangerouslySetInnerHTML={{ __html: product.description }} />
+          <div
+            dangerouslySetInnerHTML={{ __html: product.description }}
+            className="py-4"
+          />
         )}
 
         <AddCart product={product} />

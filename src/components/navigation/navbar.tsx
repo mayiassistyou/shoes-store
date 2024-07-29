@@ -1,7 +1,8 @@
 import { auth } from "@/server/auth";
 import Link from "next/link";
 
-import HamburgerMenu from "./hamburger-menu";
+import CartButton from "./cart-button";
+// import HamburgerMenu from "./hamburger-menu";
 import LoginButton from "./login-button";
 import Logo from "./logo";
 import NavLink from "./navlink";
@@ -25,7 +26,7 @@ async function Navbar() {
           <NavLink href="/about" name="Về chúng tôi" />
         </ul> */}
 
-        <div className="flex flex-1 items-center justify-end gap-2 lg:gap-4">
+        <div className="flex flex-1 items-center justify-end gap-2">
           {session && session?.user.role === "admin" && (
             <ul className="hidden lg:block">
               <NavLink href="/admin" name="Quản lý" />
@@ -33,7 +34,12 @@ async function Navbar() {
           )}
           <ThemeToggle />
           {session ? (
-            <UserButton expires={session?.expires} user={session?.user} />
+            <>
+              <Link href="/cart" aria-label="cart">
+                <CartButton />
+              </Link>
+              <UserButton expires={session?.expires} user={session?.user} />
+            </>
           ) : (
             <LoginButton />
           )}

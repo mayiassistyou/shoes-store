@@ -26,7 +26,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={roboto.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="mx-auto max-w-8xl flex-grow px-6 md:px-12">
+          <div className="mx-auto max-w-8xl flex-grow px-4 md:px-12">
             <Navbar />
             <Toaster />
 

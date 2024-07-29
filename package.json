@@ -43,6 +43,7 @@
     "drizzle-orm": "^0.31.2",
     "embla-carousel-react": "^8.1.7",
     "framer-motion": "^11.2.13",
+    "lottie-react": "^2.4.0",
     "lucide-react": "^0.400.0",
     "next": "14.2.4",
     "next-auth": "5.0.0-beta.19",
@@ -58,7 +59,8 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^6.13.2",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
